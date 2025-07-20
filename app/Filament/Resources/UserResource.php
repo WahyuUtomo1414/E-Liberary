@@ -69,7 +69,10 @@ class UserResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('avatar_url')
-                    ->label('Foto Profile'),
+                    ->label('Foto Profile')
+                    ->size(70)
+                    ->circular()
+                    ->defaultImageUrl(asset('images/12.png')),
                 TextColumn::make('name')
                     ->searchable()
                     ->label('Nama'),
