@@ -2,16 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StatusResource\Pages;
-use App\Filament\Resources\StatusResource\RelationManagers;
-use App\Models\Status;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Status;
+use Filament\Forms\Form;
+use App\Models\StatusType;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ColorPicker;
+use App\Filament\Resources\StatusResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StatusResource\RelationManagers;
 
 class StatusResource extends Resource
 {
@@ -23,24 +29,21 @@ class StatusResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('status_type_id')
+                Select::make('status_type_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('name')
+                    ->label('Status Type')
+                    ->options(StatusType::all()->pluck('name', 'id'))
+                    ->columnSpan(2),
+                TextInput::make('name')
                     ->required()
-                    ->maxLength(128),
-                Forms\Components\Textarea::make('desc')
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('active')
+                    ->maxLength(128)
+                    ->columnSpan(2),
+                Textarea::make('desc')
+                    ->label('Description')
+                    ->maxLength(255)
+                    ->columnSpan(2),
+                Toggle::make('active')
                     ->required(),
-                Forms\Components\TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                Forms\Components\TextInput::make('updated_by')
-                    ->numeric(),
-                Forms\Components\TextInput::make('deleted_by')
-                    ->numeric(),
             ]);
     }
 
