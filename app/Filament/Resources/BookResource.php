@@ -10,15 +10,20 @@ use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\Grid;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use App\Filament\Resources\BookResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BookResource\RelationManagers;
@@ -152,6 +157,47 @@ class BookResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Buku')
+                    ->icon('heroicon-m-book-open')
+                    ->description('Informasi detail mengenai buku yang tersedia di perpustakaan, termasuk kategori, penulis, tahun terbit, dan status ketersediaan.')
+                    ->aside()
+                    ->schema([
+                        ImageEntry::make('image')
+                            ->size(100)
+                            ->height(140)
+                            ->label('Foto Buku')
+                            ->columnSpanFull()
+                            ->alignment('center'),
+                        Grid::make()
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('book_code')
+                                    ->label('Kode Buku')
+                                    ->columnSpan(1),
+                                TextEntry::make('title')
+                                    ->label('Judul Buku')
+                                    ->columnSpan(1),
+                                TextEntry::make('author')
+                                    ->label('Penulis'),
+                                TextEntry::make('category.name')
+                                    ->label('Kategori'),
+                                TextEntry::make('year_publish')
+                                    ->label('Tahun Terbit'),
+                                TextEntry::make('quantity')
+                                    ->label('Jumlah Buku'),
+                                ]),
+                        TextEntry::make('desc')
+                            ->label('Deskripsi'),
+                        TextEntry::make('status.name')
+                            ->label('Status'),
+                    ])
             ]);
     }
 
