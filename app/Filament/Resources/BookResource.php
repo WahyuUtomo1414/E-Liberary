@@ -27,7 +27,13 @@ class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
+    protected static ?string $navigationGroup = 'Manajemen Perpustakaan';
+
+    protected static ?string $navigationLabel = 'Buku';
+
+    protected static ?string $label = 'Buku';
 
     public static function form(Form $form): Form
     {
@@ -47,6 +53,7 @@ class BookResource extends Resource
                     ->options(Category::pluck('name', 'id')),
                 TextInput::make('book_code')
                     ->required()
+                    ->label('Kode Buku')
                     ->default('BOOK-' . mt_rand(1000000000, 9999999999))
                     ->maxLength(16),
                 TextInput::make('author')
