@@ -13,7 +13,9 @@ use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,9 +59,6 @@ class BookResource extends Resource
                     ->columnSpanFull()
                     ->label('Judul')
                     ->maxLength(255),
-                Textarea::make('desc')
-                    ->label('Keterangan')
-                    ->columnSpanFull(),
                 DatePicker::make('year_publish')
                     ->label('Tahun Terbit')
                     ->native(false)
@@ -68,6 +67,9 @@ class BookResource extends Resource
                     ->label('Jumlah Buku')
                     ->required()
                     ->numeric(),
+                Textarea::make('desc')
+                    ->label('Deskripsi')
+                    ->columnSpanFull(),
                 Select::make('status_id')
                     ->required()
                     ->label('Status')
@@ -81,34 +83,41 @@ class BookResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
+                ImageColumn::make('image')
+                    ->size(70)
+                    ->height(100)
+                    ->label('Foto Buku'),
+                TextColumn::make('title')
+                    ->label('Judul Buku')
+                    ->searchable(),
+                TextColumn::make('author')
+                    ->label('Penulis')
+                    ->searchable(),
+                TextColumn::make('category.name')
+                    ->label('Kategori')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('book_code')
+                TextColumn::make('book_code')
+                    ->label('Kode Buku')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('author')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('year_publish')
+                TextColumn::make('year_publish')
+                    ->label('Tahun Terbit')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
+                TextColumn::make('quantity')
+                    ->label('Jumlah Buku')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('desc')
+                    ->label('Deskripsi')
+                    ->limit(50),
+                TextColumn::make('status.name')
+                    ->label('Status'),
+                TextColumn::make('createdBy.name')
+                    ->label('Created By'),
+                TextColumn::make('updatedBy.name')
+                    ->label("Updated by"),
+                TextColumn::make('deletedBy.name')
+                    ->label("Deleted by"),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -126,7 +135,9 @@ class BookResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
