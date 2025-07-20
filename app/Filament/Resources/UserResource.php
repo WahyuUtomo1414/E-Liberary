@@ -10,7 +10,9 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
@@ -64,16 +66,24 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                ImageColumn::make('avatar_url')
+                    ->label('Avatar'),
+                TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('avatar_url')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('role'),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                TextColumn::make('role'),
+                TextColumn::make('status.name')
+                    ->label('Status'),
+                TextColumn::make('createdBy.name')
+                    ->label('Created By')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updatedBy.name')
+                    ->label("Updated by")
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deletedBy.name')
+                    ->label("Deleted by")
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -82,15 +92,14 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('status_id')
-                    ->numeric()
-                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
