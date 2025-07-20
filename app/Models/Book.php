@@ -18,4 +18,10 @@ class Book extends Model
     {
         return $this->belongsTo(Status::class, 'status_id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }
+
