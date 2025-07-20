@@ -27,7 +27,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('SDN 07 Rawa Buaya')
+            ->brandName('Perpustakaan SDN 07')
+            ->favicon(asset('images/sd.png'))
             ->colors([
                 'primary' => Color::Amber,
             ])
