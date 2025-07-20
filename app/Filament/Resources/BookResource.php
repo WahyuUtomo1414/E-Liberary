@@ -2,16 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BookResource\Pages;
-use App\Filament\Resources\BookResource\RelationManagers;
-use App\Models\Book;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Book;
 use Filament\Tables;
+use App\Models\Status;
+use App\Models\Category;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\BookResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\BookResource\RelationManagers;
 
 class BookResource extends Resource
 {
@@ -23,39 +31,49 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('book_code')
-                    ->required()
-                    ->maxLength(16),
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
+                FileUpload::make('image')
                     ->image()
+                    ->label('Foto Buku')
+                    ->columnSpanFull()
+                    ->directory('Book Image')
                     ->required(),
-                Forms\Components\TextInput::make('author')
+                Select::make('category_id')
+                    ->required()
+                    ->label('Kategori')
+                    ->searchable()
+                    ->columnSpanFull()
+                    ->options(Category::pluck('name', 'id')),
+                TextInput::make('book_code')
+                    ->required()
+                    ->default('BOOK-' . mt_rand(1000000000, 9999999999))
+                    ->maxLength(16),
+                TextInput::make('author')
+                    ->label('Penulis')
                     ->required()
                     ->maxLength(128),
-                Forms\Components\Textarea::make('desc')
+                TextInput::make('title')
+                    ->required()
+                    ->label('Judul Buku')
+                    ->columnSpanFull()
+                    ->label('Judul')
+                    ->maxLength(255),
+                Textarea::make('desc')
+                    ->label('Keterangan')
                     ->columnSpanFull(),
-                Forms\Components\DatePicker::make('year_publish')
+                DatePicker::make('year_publish')
+                    ->label('Tahun Terbit')
+                    ->native(false)
                     ->required(),
-                Forms\Components\TextInput::make('quantity')
+                TextInput::make('quantity')
+                    ->label('Jumlah Buku')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('status_id')
+                Select::make('status_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('created_by')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                Forms\Components\TextInput::make('updated_by')
-                    ->numeric(),
-                Forms\Components\TextInput::make('deleted_by')
-                    ->numeric(),
+                    ->label('Status')
+                    ->searchable()
+                    ->columnSpanFull()
+                    ->options(Status::where('status_type_id', 2)->pluck('name', 'id')),
             ]);
     }
 
