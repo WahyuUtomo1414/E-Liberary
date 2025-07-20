@@ -58,7 +58,6 @@ class UserResource extends Resource
                     ->label('Status')
                     ->searchable()
                     ->default(1)
-                    ->disabled(fn () => auth()->user()?->role_id === 2)
                     ->columnSpanFull()
                     ->options(Status::where('status_type_id', 1)->pluck('name', 'id')),
             ]);
